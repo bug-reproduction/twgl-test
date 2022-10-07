@@ -64,6 +64,13 @@
 
     const gl = document.querySelector("#c").getContext("webgl2");
     const programInfo = twgl.createProgramInfo(gl, ["vs", "fs"]);
+    const arrays = {
+      a_position: {
+        numComponents: 2,
+        data: [],
+      },
+    };
+    const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 
     function render(time) {
       twgl.resizeCanvasToDisplaySize(gl.canvas);
@@ -93,17 +100,19 @@
         data.push(x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2);
       }
 
-      const arrays = {
-        a_position: {
-          numComponents: 2,
-          data,
-        },
-      };
-
-      const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+      // trying to update the buffer with new data :
+      // arrays.a_position.data = new Float32Array(data);
+      twgl.setAttribInfoBufferFromArray(gl, bufferInfo.attribs.a_position, {
+        numComponents: 2,
+        data,
+      });
+      // twgl.setAttribInfoBufferFromArray(
+      //   gl,
+      //   bufferInfo.attribs.a_position,
+      //   data
+      // );
 
       twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
-
       twgl.setUniforms(programInfo, uniforms);
 
       twgl.drawBufferInfo(gl, bufferInfo, gl.TRIANGLES);
