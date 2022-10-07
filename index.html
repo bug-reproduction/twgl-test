@@ -71,14 +71,15 @@
 
       const uniforms = {
         u_resolution: [gl.canvas.width, gl.canvas.height],
-        u_color: [0, 0, 0, 1],
+        u_color: [0, 0, 1, 1],
       };
 
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
       gl.useProgram(programInfo.program);
-      let bufferInfo;
+
+      let data = [];
       // draw 50 random rectangles in random colors
       for (var ii = 0; ii < 50; ++ii) {
         const x = randomInt(300);
@@ -89,23 +90,24 @@
         var x2 = x + width;
         var y1 = y;
         var y2 = y + height;
-        const arrays = {
-          // a_position: [x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]
-          a_position: {
-            numComponents: 2,
-            data: [x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2],
-          },
-        };
-
-        bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays, bufferInfo);
-        twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
-        console.log(bufferInfo);
-
-        uniforms.u_color = [Math.random(), Math.random(), Math.random(), 1];
-        twgl.setUniforms(programInfo, uniforms);
-
-        twgl.drawBufferInfo(gl, bufferInfo, gl.TRIANGLES);
+        data.push(x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2);
       }
+
+      const arrays = {
+        a_position: {
+          numComponents: 2,
+          data,
+        },
+      };
+
+      const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+
+      twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+
+      twgl.setUniforms(programInfo, uniforms);
+
+      twgl.drawBufferInfo(gl, bufferInfo, gl.TRIANGLES);
+
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
