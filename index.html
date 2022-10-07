@@ -100,17 +100,12 @@
         data.push(x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2);
       }
 
-      // trying to update the buffer with new data :
-      // arrays.a_position.data = new Float32Array(data);
-      twgl.setAttribInfoBufferFromArray(gl, bufferInfo.attribs.a_position, {
-        numComponents: 2,
-        data,
-      });
-      // twgl.setAttribInfoBufferFromArray(
-      //   gl,
-      //   bufferInfo.attribs.a_position,
-      //   data
-      // );
+      twgl.setAttribInfoBufferFromArray(
+        gl,
+        bufferInfo.attribs.a_position,
+        data
+      );
+      bufferInfo.numElements = data.length / 2;
 
       twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
       twgl.setUniforms(programInfo, uniforms);
